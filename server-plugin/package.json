@@ -1,0 +1,7 @@
+{
+  "name": "sillytavern-npc-event-director-server",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "main": "index.mjs"
+}

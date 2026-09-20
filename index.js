@@ -55,7 +55,7 @@ function render() {
   ].filter(([key]) => s[key] === 'AUTO').map(([, name]) => name).join(' · ') || 'AUTO 항목 없음';
   const villain = document.querySelector('#ned-villain-state'); if (villain) villain.textContent = `빌런: ${st.villain} · ${st.last}`;
   const genres = document.querySelector('#ned-active-genres'); if (genres) genres.textContent = activeGenres(c.chatMetadata) || '(현재 채팅의 GENRE 변수 없음)';
-  const keyState = document.querySelector('#ned-key-state'); if (keyState) keyState.textContent = keyConfigured ? 'Jev 키 저장됨 (이 브라우저)' : 'Jev 키 없음';
+  const keyState = document.querySelector('#ned-key-state'); if (keyState) keyState.textContent = keyConfigured ? 'Jev 키 저장됨 (서버)' : 'Jev 키 없음';
 }
 function mount() {
   const wand = document.querySelector('#extensionsMenu');
@@ -107,7 +107,7 @@ function mount() {
         <p><strong>NPC·사건·빌런 기회 %</strong> · AUTO에서 각각의 주사위 확률을 직접 입력합니다. Jev가 다시 허용하거나 취소합니다.</p>
         <p><strong>빌런 이벤트 종료</strong> · 이 채팅의 진행 중 빌런 상태를 초기화합니다.</p>
         <p><strong>주입 플로팅 카드 보기</strong> · 실제 영어 지시를 화면에 표시합니다. 한글 번역 버튼은 보기용으로만 번역합니다.</p>
-        <p><strong>키 저장 / 키 삭제</strong> · 이 브라우저에 Jev 키를 저장하거나 지웁니다. <strong>모델</strong>은 Jev 모델 이름입니다.</p>
+        <p><strong>키 저장 / 키 삭제</strong> · SillyTavern 서버에 Jev 키를 저장하거나 지웁니다. <strong>모델</strong>은 Jev 모델 이름입니다.</p>
         <p><strong>번역 연결 프로필 / 새로고침</strong> · 미리보기 번역에 사용할 프로필을 고르거나 목록을 다시 읽습니다. <strong>최근 채팅 메시지 수</strong>는 Jev가 볼 대화 길이입니다.</p>
       </div></details>
       <label>Jev API key <input id="ned-key-input" type="password" autocomplete="off" placeholder="새 키 입력"></label>
@@ -117,7 +117,7 @@ function mount() {
       <button type="button" id="ned-refresh-profiles">프로필 새로고침</button>
       <label>최근 채팅 메시지 수 <input type="number" min="2" max="20" data-setting="recentCount"></label>
       <div class="ned-genres"><strong>현재 활성 장르 (GENRE 변수)</strong><pre id="ned-active-genres"></pre></div>
-      <p class="ned-note">Jev 키는 이 브라우저의 로컬 저장소에 보관합니다. 이 브라우저를 쓰는 사람과 같은 출처의 스크립트가 키에 접근할 수 있습니다. 모델, 기능, 번역 프로필 선택은 이 채팅에만 저장됩니다. Jev 직접 연결이 차단되면 SillyTavern의 내장 CORS 프록시 설정이 필요할 수 있습니다.</p>
+      <p class="ned-note">Jev 키는 SillyTavern 서버의 현재 사용자 저장소에 보관하며 브라우저 코드에는 남기지 않습니다. 모델, 기능, 번역 프로필 선택은 이 채팅에만 저장됩니다. 이 기능을 쓰려면 함께 제공된 서버 플러그인을 설치하고 enableServerPlugins를 켜야 합니다.</p>
     </section></main><footer id="ned-status">대기</footer>
   </div>`;
   document.body.append(panel);
