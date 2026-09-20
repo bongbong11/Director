@@ -1,7 +1,7 @@
 {
   "display_name": "NPC · 사건 생성 확장",
   "author": "Codex",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "js": "index.js",
   "css": "style.css",
   "loading_order": 50,

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { defaults, initialState, decide, villainProfile, recentChat } from './director.js';
+import { defaults, initialState, decide, villainProfile, recentChat, activeGenres, buildState } from './director.js';
 import { assemble } from './prompts.js';
 const answers = values => Object.fromEntries(Object.entries(values).map(([k, v]) => [k, { type: 'noul', noul: v }]));
 test('Jev veto prevents a successful die from forcing NPC creation', () => {
@@ -25,4 +25,14 @@ test('source-work guidance works independently of negative world', () => {
   assert.match(prompt, /character interpretation/);
   assert.match(prompt, /genre vocabulary/);
   assert.match(prompt, /Do not assert uncertain canon/);
+});
+test('NPC continuity is injected only when a returning NPC is involved', () => {
+  const settings = { worldMode: 'OFF', canonMode: 'OFF' };
+  assert.doesNotMatch(assemble({ actions: ['event'] }, settings), /NPC_CONTINUITY/);
+  assert.match(assemble({ actions: ['existingNpc'] }, settings), /NPC_CONTINUITY/);
+  assert.match(assemble({ actions: ['newNpc'] }, settings), /NPC_CRAFT_PASS/);
+});
+test('active GENRE variable reaches Jev without altering chat history', () => {
+  const genres = activeGenres({ variables: { GENRE: '- Canon World\n- Mystery' } });
+  assert.equal(buildState([], initialState(), [], genres).active_genres, '- Canon World\n- Mystery');
 });

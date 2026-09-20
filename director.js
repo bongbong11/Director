@@ -2,7 +2,8 @@ import { score } from './jev.js';
 
 export const defaults = Object.freeze({
   npcMode: 'AUTO', eventMode: 'AUTO', fightMode: 'OFF', autonomyMode: 'OFF',
-  emotionMode: 'OFF', villainMode: 'AUTO', worldMode: 'OFF', canonMode: 'ON', pressureMode: 'AUTO',
+  emotionMode: 'OFF', villainMode: 'AUTO', worldMode: 'OFF', canonMode: 'AUTO', pressureMode: 'AUTO',
+  previewGeneral: false, previewNegative: false, translationProfile: '',
   npcChance: 20, eventChance: 15, villainChance: 10, recentCount: 10
 });
 export const initialState = () => ({ villain: 'idle', profile: null, pending: false, last: '대기' });
@@ -16,9 +17,13 @@ export function recentChat(chat, count = 10) {
 }
 export function isOoc(messages) { return /\(ooc\s*:/i.test([...messages].reverse().find(m => m.role === 'user')?.text || ''); }
 export async function retrievalContext(provider, messages) { return provider ? await provider.retrieve(messages) : []; }
-export function buildState(messages, state, retrieved = []) {
+export function activeGenres(chatMetadata) {
+  const value = chatMetadata?.variables?.GENRE;
+  return typeof value === 'string' ? value.trim().slice(0, 1200) : '';
+}
+export function buildState(messages, state, retrieved = [], genres = '') {
   return { current_user: [...messages].reverse().find(m => m.role === 'user')?.text || '', recent_chat: messages,
-    ongoing_antagonist: state.villain === 'active', antagonist_profile: state.profile, relevant_memory: retrieved };
+    ongoing_antagonist: state.villain === 'active', antagonist_profile: state.profile, active_genres: genres, relevant_memory: retrieved };
 }
 const axes = {
   access: ['stranger with ordinary access','local regular or neighbour','work or institutional contact','acquaintance with limited history','indirect contact or intermediary','existing rival if supported'],

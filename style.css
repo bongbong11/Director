@@ -1,10 +1,25 @@
-#npc-event-director { padding: 8px; }
-#npc-event-director summary { cursor: pointer; font-weight: 700; }
-#npc-event-director .ned-body { padding: 10px 4px; }
-#npc-event-director nav { display: flex; gap: 8px; margin-bottom: 12px; }
-#npc-event-director nav button.selected { border-color: var(--SmartThemeQuoteColor); font-weight: 700; }
-#npc-event-director label { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
-#npc-event-director input, #npc-event-director select { width: 100%; box-sizing: border-box; }
-#npc-event-director .ned-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 12px; }
-#npc-event-director .ned-note, #npc-event-director p, #ned-status { opacity: .8; font-size: .9em; }
-#ned-status { display: block; margin-top: 12px; }
+#ned-wand-button { cursor: pointer; padding: 8px 12px; color: var(--SmartThemeBodyColor); }
+#npc-event-director, #ned-preview { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); box-sizing: border-box; }
+#npc-event-director[hidden], #ned-preview[hidden], #npc-event-director [hidden] { display: none !important; }
+#npc-event-director .ned-backdrop, #ned-preview .ned-backdrop { position: absolute; inset: 0; background: rgb(0 0 0 / .7); }
+#npc-event-director .ned-dialog, #ned-preview .ned-dialog { position: relative; z-index: 1; width: min(620px, 100%); max-height: calc(100dvh - 24px); display: flex; flex-direction: column; overflow: hidden; color: var(--SmartThemeBodyColor); background: var(--SmartThemeBlurTintColor, #24242a); border: 1px solid var(--SmartThemeBorderColor, #888); border-radius: 16px; box-shadow: 0 18px 70px rgb(0 0 0 / .5); backdrop-filter: blur(18px); }
+#npc-event-director header, #ned-preview header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--SmartThemeBorderColor, #777); }
+#npc-event-director header strong, #ned-preview header strong { font-size: 1.1rem; }
+#npc-event-director header button, #ned-preview header button { font-size: 1.5rem; line-height: 1; min-width: 36px; min-height: 36px; }
+#npc-event-director nav { display: flex; gap: 6px; padding: 10px 14px 0; }
+#npc-event-director nav button { flex: 1; min-height: 40px; border-radius: 9px 9px 0 0; }
+#npc-event-director nav button.selected { border-bottom: 2px solid var(--SmartThemeQuoteColor, #8bbef4); font-weight: 700; }
+#npc-event-director main, #ned-preview main { overflow-y: auto; overscroll-behavior: contain; padding: 12px 18px 18px; }
+#npc-event-director label { display: flex; flex-direction: column; gap: 5px; margin: 8px 0; }
+#npc-event-director input:not([type=checkbox]), #npc-event-director select { width: 100%; box-sizing: border-box; min-height: 38px; }
+#npc-event-director .ned-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
+#npc-event-director .ned-toggle { display: flex; flex-direction: row; align-items: center; gap: 8px; margin-top: 16px; padding: 10px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
+#npc-event-director .ned-toggle input { width: 18px; height: 18px; }
+#npc-event-director p, #npc-event-director footer, #ned-preview p { opacity: .88; font-size: .91rem; line-height: 1.5; }
+#npc-event-director footer { padding: 10px 18px; border-top: 1px solid var(--SmartThemeBorderColor, #777); }
+#npc-event-director .ned-genres { margin-top: 14px; padding: 10px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
+#npc-event-director .ned-genres pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 7px 0 0; font: inherit; opacity: .85; }
+#ned-preview #ned-preview-ko { white-space: pre-wrap; line-height: 1.6; }
+#ned-preview details { margin-top: 18px; }
+#ned-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .83rem; }
+@media (max-width: 520px) { #npc-event-director, #ned-preview { padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)); } #npc-event-director .ned-dialog, #ned-preview .ned-dialog { max-height: calc(100dvh - 16px); } #npc-event-director .ned-grid { grid-template-columns: 1fr; gap: 0; } #npc-event-director main, #ned-preview main { padding: 10px 14px 16px; } }

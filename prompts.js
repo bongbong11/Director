@@ -1,3 +1,5 @@
+import { NPC_CONTINUITY, NPC_CRAFT_PASS } from './continuity.js';
+
 const atoms = {
   autonomy: 'NPCs retain separate aims, knowledge, relationships and initiative even without {{user}}. Enact a relevant choice through dialogue, action or later visible consequences; preserve viewpoint and user agency.',
   emotion: 'Match emotion to established personality, relationship and stakes. {{user}} involvement alone adds no extra intensity; do not turn ordinary input into overwhelming love, rage or despair.',
@@ -13,13 +15,17 @@ const atoms = {
 };
 export function assemble(decision, settings, { compassion = false } = {}) {
   const parts = [];
-  if (settings.canonMode !== 'OFF') {
+  if (settings.canonMode === 'ON' || settings.canonMode === 'AUTO' && decision.actions.some(action => ['existingNpc','newNpc','event','villainStart','villainContinue'].includes(action))) {
     parts.push('If this setting is based on an existing work, let its supplied canon shape character interpretation, voice, relationships, institutions, event causes, story threads, motifs and genre vocabulary. When relevant, use specific established names, terms, places, rules and unresolved story threads in natural dialogue and consequences. Ground them in the character sheets, lore and chat; preserve chronology and each person’s knowledge. Do not assert uncertain canon as fact or force a famous plot beat into the current scene.');
   }
   if (settings.worldMode !== 'OFF') {
     parts.push('In the negative-world mode, unsheeted newcomers default to indifference or self-interest; keep defined characters’ established dispositions. ' + (compassion ? 'One naturally appearing unsheeted newcomer may be genuinely compassionate; do not force an entrance.' : 'No compassion exception is selected this turn.'));
   }
+  if (settings.emotionMode === 'ON' && !decision.actions.includes('emotion')) parts.push(atoms.emotion);
   for (const action of [...new Set(decision.actions)]) if (atoms[action]) parts.push(atoms[action]);
+  if (decision.actions.some(action => ['existingNpc', 'newNpc', 'autonomy', 'villainStart', 'villainContinue'].includes(action))) {
+    parts.push(NPC_CONTINUITY, NPC_CRAFT_PASS);
+  }
   if (decision.actions.includes('villainStart') || decision.actions.includes('villainContinue')) {
     const profile = decision.profile;
     if (profile) parts.push('Fixed antagonist pressures: ' + Object.entries(profile).map(([key, value]) => `${key}=${value}`).join('; ') + '.');
