@@ -1,4 +1,4 @@
-# NPC · 사건 생성 확장 (v0.2.1)
+# NPC · 사건 생성 확장 (v0.2.2)
 
 `npc-event-director` 폴더를 SillyTavern의 `data/<사용자>/extensions/third-party/`에 복사한 뒤 새로고침하세요. 채팅 입력창의 **마법봉 메뉴 → NPC · 사건 생성**에서 관리 창을 엽니다. **설정** 탭에 Jev API key와 model(기본 `jev-latest`)을 입력합니다. 메인 RP 생성은 현재 SillyTavern 연결을 그대로 사용하므로 별도 LLM 연결 프로필과 임베딩 키가 필요하지 않습니다.
 

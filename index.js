@@ -32,8 +32,13 @@ function render() {
 function mount() {
   const wand = document.querySelector('#extensionsMenu');
   if (!wand) { setTimeout(mount, 500); return; }
-  const button = document.createElement('div'); button.id = 'ned-wand-button'; button.className = 'extensionsMenuExtensionButton';
-  button.setAttribute('role', 'button'); button.tabIndex = 0; button.textContent = '✦ NPC · 사건 생성'; wand.append(button);
+  if (document.querySelector('#ned-wand-button')) return;
+  const container = document.createElement('div'); container.className = 'extension_container';
+  const button = document.createElement('div'); button.id = 'ned-wand-button'; button.className = 'list-group-item flex-container flexGap5';
+  button.setAttribute('role', 'button'); button.tabIndex = 0;
+  const icon = document.createElement('div'); icon.className = 'fa-solid fa-dice-d20 extensionsMenuExtensionButton'; icon.setAttribute('aria-hidden', 'true');
+  const label = document.createElement('span'); label.textContent = 'NPC · 사건 생성';
+  button.append(icon, label); container.append(button); wand.append(container);
   const panel = document.createElement('div'); panel.id = 'npc-event-director'; panel.hidden = true;
   panel.innerHTML = `<div class="ned-backdrop" data-close="panel"></div><div class="ned-dialog" role="dialog" aria-modal="true" aria-label="NPC · 사건 생성 설정">
     <header><strong>NPC · 사건 생성</strong><button type="button" data-close="panel" aria-label="닫기">×</button></header>

@@ -1,4 +1,5 @@
-#ned-wand-button { cursor: pointer; padding: 8px 12px; color: var(--SmartThemeBodyColor); }
+#ned-wand-button { cursor: pointer; width: 100%; box-sizing: border-box; align-items: center; color: var(--SmartThemeBodyColor); }
+#ned-wand-button span { white-space: nowrap; }
 #npc-event-director, #ned-preview { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); box-sizing: border-box; }
 #npc-event-director[hidden], #ned-preview[hidden], #npc-event-director [hidden] { display: none !important; }
 #npc-event-director .ned-backdrop, #ned-preview .ned-backdrop { position: absolute; inset: 0; background: rgb(0 0 0 / .7); }
