@@ -1,20 +1,13 @@
-# NPC · 사건 생성 확장 (v0.4.1)
+# NPC · 사건 생성 확장 (v0.4.2)
 
 Jev로 현재 RP 문맥을 판정하고, 필요한 NPC·사건·갈등 지시만 SillyTavern 생성 프롬프트에 넣는 확장입니다.
 
 ## 설치
 
 1. 이 저장소를 SillyTavern의 `data/<사용자>/extensions/third-party/Director`에 설치하거나 기존 확장을 업데이트합니다.
-2. SillyTavern의 `config.yaml`에서 다음 값을 켭니다.
+2. **마법봉 메뉴 → NPC · 사건 생성 → 설정**에서 Jev API key를 저장합니다.
 
-   ```yaml
-   enableCorsProxy: true
-   ```
-
-3. SillyTavern 서버를 완전히 종료한 뒤 다시 실행합니다.
-4. **마법봉 메뉴 → NPC · 사건 생성 → 설정**에서 Jev API key를 저장합니다.
-
-별도 서버 플러그인은 필요하지 않습니다. 확장은 SillyTavern 내장 `/proxy/`를 통해 TypeSafe API를 호출합니다.
+별도 서버 플러그인이나 `enableCorsProxy` 설정은 필요하지 않습니다. 브라우저에서 TypeSafe Jev API를 직접 호출합니다.
 
 ## 키 보관
 
@@ -37,7 +30,7 @@ Jev로 현재 RP 문맥을 판정하고, 필요한 NPC·사건·갈등 지시만
 
 ## 오류 확인
 
-- `enableCorsProxy: true를 설정...`: 프록시가 꺼져 있거나 서버를 아직 재시작하지 않음
+- `Jev API에 직접 연결할 수 없습니다`: 네트워크 또는 브라우저 연결 차단
 - `API 키가 유효하지 않습니다`: TypeSafe가 키를 인증하지 못함 (`401`)
 - `이 키 또는 계정에 Jev API 이용 권한이 없습니다`: 계정 승인 또는 권한 문제 (`403`)
 - `Jev 요청 한도를 초과했습니다`: API 한도 초과 (`429`)

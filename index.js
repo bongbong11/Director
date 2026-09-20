@@ -117,7 +117,7 @@ function mount() {
       <button type="button" id="ned-refresh-profiles">프로필 새로고침</button>
       <label>최근 채팅 메시지 수 <input type="number" min="2" max="20" data-setting="recentCount"></label>
       <div class="ned-genres"><strong>현재 활성 장르 (GENRE 변수)</strong><pre id="ned-active-genres"></pre></div>
-      <p class="ned-note">Jev 키는 이 브라우저의 로컬 저장소에 보관합니다. Jev 요청에는 SillyTavern 내장 프록시를 사용하므로 config.yaml의 enableCorsProxy를 켜고 서버를 재시작해야 합니다. 모델, 기능, 번역 프로필 선택은 이 채팅에만 저장됩니다.</p>
+      <p class="ned-note">Jev 키는 이 브라우저의 로컬 저장소에 보관하며 TypeSafe Jev API로 직접 전송합니다. 별도 서버 플러그인이나 CORS 프록시 설정은 필요하지 않습니다. 모델, 기능, 번역 프로필 선택은 이 채팅에만 저장됩니다.</p>
     </section></main><footer id="ned-status">대기</footer>
   </div>`;
   document.body.append(panel);
