@@ -1,4 +1,3 @@
-const endpoint = 'https://api.typesafe.ai/v1/systemone';
 const n = instructions => ({ type: 'noul', instructions });
 export const questions = {
   due: n('An established promise, plan, deadline, or consequence is due now.'),
@@ -18,21 +17,4 @@ export const questions = {
 export function score(answers, key) {
   const value = answers?.[key]?.noul;
   return typeof value === 'number' && value >= 0 && value <= 1 ? value : null;
-}
-
-export async function evaluateJev({ apiKey, model, state, fetcher = fetch }) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 10000);
-  try {
-    const response = await fetcher(endpoint, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, state, questions }),
-      signal: controller.signal
-    });
-    if (!response.ok) throw new Error(`Jev HTTP ${response.status}`);
-    const body = await response.json();
-    if (!body?.answers || score(body.answers, 'busy') === null) throw new Error('Jev 응답 형식이 올바르지 않습니다.');
-    return body.answers;
-  } finally { clearTimeout(timer); }
 }

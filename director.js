@@ -39,27 +39,43 @@ export function decide(settings, state, answers, chances) {
   if (!answers) return result;
   const crowded = yes(answers, 'busy', .72), forced = yes(answers, 'forced', .7);
   const eligible = !crowded && !forced;
-  const mode = (key, eligibleFlag) => settings[key] === 'ON' || (settings[key] === 'AUTO' && eligibleFlag);
-  if (state.villain === 'active' && active(settings.villainMode) && settings.fightMode !== 'ON') {
+  const mode = (key, eligibleFlag) => settings[key] === 'AUTO' && eligibleFlag;
+  if (state.villain === 'active' && settings.villainMode === 'AUTO' && settings.fightMode !== 'ON') {
     if (yes(answers, 'resolve', .75)) { result.villain = 'idle'; result.profile = null; }
     else result.actions.push('villainContinue');
   }
-  if (mode('fightMode', yes(answers, 'fight')) && (settings.fightMode === 'ON' || yes(answers, 'fight'))) result.actions.push('fight');
-  if (settings.autonomyMode === 'ON' || settings.autonomyMode === 'AUTO' && yes(answers, 'existing')) result.actions.push('autonomy');
-  if (settings.emotionMode === 'ON' || settings.emotionMode === 'AUTO') result.actions.push('emotion');
-  if (eligible && mode('npcMode', chances.npc || yes(answers, 'due'))) {
+  if (mode('fightMode', yes(answers, 'fight'))) result.actions.push('fight');
+  if (settings.autonomyMode === 'AUTO' && yes(answers, 'existing')) result.actions.push('autonomy');
+  if (settings.emotionMode === 'AUTO') result.actions.push('emotion');
+  if (eligible && mode('npcMode', chances.npc)) {
     if (yes(answers, 'npc') || yes(answers, 'due')) {
       if (yes(answers, 'existing')) result.actions.push('existingNpc');
       else if (yes(answers, 'newcomer')) result.actions.push('newNpc');
     }
   }
-  if (eligible && mode('eventMode', chances.event || yes(answers, 'due')) && (yes(answers, 'event') || yes(answers, 'due'))) result.actions.push('event');
+  if (eligible && mode('eventMode', chances.event) && (yes(answers, 'event') || yes(answers, 'due'))) result.actions.push('event');
   if (eligible && mode('pressureMode', yes(answers, 'pressure')) && yes(answers, 'pressure')) result.actions.push('pressure');
-  if (eligible && state.villain === 'idle' && settings.fightMode !== 'ON' && mode('villainMode', chances.villain) && yes(answers, 'npc') && (yes(answers, 'existing') || yes(answers, 'newcomer')) && yes(answers, 'pressure')) {
+  if (eligible && state.villain === 'idle' && !state.pending && settings.fightMode !== 'ON' && mode('villainMode', chances.villain) && yes(answers, 'npc') && (yes(answers, 'existing') || yes(answers, 'newcomer')) && yes(answers, 'pressure')) {
     result.villain = 'pending'; result.actions.push('villainStart');
   }
   if (yes(answers, 'indirect')) result.actions.push('indirect');
   if (yes(answers, 'escalate') && result.actions.includes('fight')) result.actions.push('escalate');
   result.reason = result.actions.length ? result.actions.join(', ') : 'Jev veto';
+  return result;
+}
+
+export function alwaysOn(settings, state, random = Math.random) {
+  const result = { ...state, actions: [], reason: 'ON 지시' };
+  if (settings.npcMode === 'ON') result.actions.push('npcOn');
+  if (settings.eventMode === 'ON') result.actions.push('eventOn');
+  if (settings.fightMode === 'ON') result.actions.push('fight');
+  if (settings.autonomyMode === 'ON') result.actions.push('autonomy');
+  if (settings.emotionMode === 'ON') result.actions.push('emotion');
+  if (settings.pressureMode === 'ON') result.actions.push('pressure');
+  if (settings.villainMode === 'ON' && settings.fightMode !== 'ON') {
+    if (state.villain === 'active') result.actions.push('villainContinue');
+    else if (state.pending && state.profile) { result.villain = 'pending'; result.actions.push('villainStart'); }
+    else { result.villain = 'pending'; result.profile = villainProfile(random); result.actions.push('villainStart'); }
+  }
   return result;
 }

@@ -24,3 +24,17 @@
 #ned-preview details { margin-top: 18px; }
 #ned-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .83rem; }
 @media (max-width: 520px) { #npc-event-director, #ned-preview { padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)); } #npc-event-director .ned-dialog, #ned-preview .ned-dialog { max-height: calc(100dvh - 16px); } #npc-event-director .ned-grid { grid-template-columns: 1fr; gap: 0; } #npc-event-director main, #ned-preview main { padding: 10px 14px 16px; } }
+#npc-event-director .ned-key-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+#npc-event-director .ned-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+#npc-event-director .ned-mode { display: flex; flex-direction: row; align-items: center; gap: 9px; margin: 0; padding: 9px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
+#npc-event-director .ned-mode input { width: 18px; height: 18px; flex: none; }
+#npc-event-director .ned-mode span { min-width: 0; }
+#ned-preview { inset: auto 16px 84px auto; width: min(440px, calc(100vw - 32px)); height: auto; display: block; padding: 0; pointer-events: none; }
+#ned-preview .ned-dialog { width: 100%; max-height: min(54dvh, 520px); pointer-events: auto; }
+#ned-preview main { display: flex; flex-direction: column; gap: 10px; }
+#ned-preview #ned-preview-raw { white-space: pre-wrap; overflow-wrap: anywhere; overflow-y: auto; max-height: 24dvh; margin: 0; font-size: .83rem; }
+#ned-preview #ned-translate { align-self: flex-start; }
+#ned-preview #ned-preview-ko { max-height: 24dvh; overflow-y: auto; }
+#ned-preview #ned-preview-ko[hidden] { display: none; }
+@media (max-width: 520px) { #ned-preview { inset: auto 8px calc(74px + env(safe-area-inset-bottom)) 8px; width: auto; padding: 0; } #ned-preview .ned-dialog { max-height: 52dvh; } }
+@media (max-width: 520px) { #npc-event-director .ned-modes { grid-template-columns: 1fr; } }
