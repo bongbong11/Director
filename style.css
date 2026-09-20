@@ -1,0 +1,10 @@
+#npc-event-director { padding: 8px; }
+#npc-event-director summary { cursor: pointer; font-weight: 700; }
+#npc-event-director .ned-body { padding: 10px 4px; }
+#npc-event-director nav { display: flex; gap: 8px; margin-bottom: 12px; }
+#npc-event-director nav button.selected { border-color: var(--SmartThemeQuoteColor); font-weight: 700; }
+#npc-event-director label { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+#npc-event-director input, #npc-event-director select { width: 100%; box-sizing: border-box; }
+#npc-event-director .ned-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 12px; }
+#npc-event-director .ned-note, #npc-event-director p, #ned-status { opacity: .8; font-size: .9em; }
+#ned-status { display: block; margin-top: 12px; }
