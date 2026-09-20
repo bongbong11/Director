@@ -1,4 +1,4 @@
-import { defaults, chancePresets, initialState, roll, recentChat, isOoc, retrievalContext, buildState, activeGenres, decide, alwaysOn } from './director.js';
+import { defaults, initialState, roll, recentChat, isOoc, retrievalContext, buildState, activeGenres, decide, alwaysOn } from './director.js';
 import { evaluateViaBridge, keyStatus, saveKey, deleteKey } from './bridge.js';
 import { assemble } from './prompts.js';
 import { supportedProfiles, translatePrompt } from './preview.js';
@@ -85,16 +85,31 @@ function mount() {
     </section><section data-pane="negative" hidden>
       <p>주입 항목 탭에서 AUTO로 고른 기능에 적용합니다. NPC·사건·빌런은 아래 기회 주사위가 성공할 때 Jev가 판정합니다. 다른 AUTO 항목은 Jev 판정과 함께 적용됩니다.</p>
       <div class="ned-auto-box"><strong>현재 AUTO 항목</strong><div id="ned-auto-summary"></div></div>
-      <div class="ned-presets" aria-label="확률 추천값"><button type="button" data-preset="rare">드묾<br><small>NPC 5 · 사건 5 · 빌런 2%</small></button><button type="button" data-preset="moderate">적당 · 추천<br><small>NPC 15 · 사건 10 · 빌런 5%</small></button><button type="button" data-preset="frequent">자주<br><small>NPC 30 · 사건 20 · 빌런 10%</small></button></div>
       <div class="ned-grid"><label>NPC 기회 % <input type="number" min="0" max="100" data-setting="npcChance"></label>
       <label>사건 기회 % <input type="number" min="0" max="100" data-setting="eventChance"></label>
       <label>빌런 기회 % <input type="number" min="0" max="100" data-setting="villainChance"></label></div>
-      <p class="ned-note">매 IC 생성마다 각각 굴리는 기회 확률입니다. 셋 다 AUTO라면 적당 추천값에서 하나 이상 주사위가 성공할 확률은 약 27%입니다. Jev가 장면에 맞지 않으면 취소하므로 실제 개입은 더 적습니다. 빌런은 한번 시작하면 상태가 이어지므로 낮게 두는 편이 자연스럽습니다.</p>
+      <p class="ned-note">숫자는 각각 직접 수정할 수 있습니다. 매 IC 생성에 굴리는 기회 확률이며, Jev가 장면에 맞지 않으면 주입하지 않습니다.</p>
       <p>싸움 유지 ON 중에는 빌런 진행·추첨을 잠시 멈춥니다. 부정 세계의 1% 동정 예외는 새 비시트 NPC에만 적용됩니다.</p>
       <button type="button" id="ned-end-villain">빌런 이벤트 종료</button><div id="ned-villain-state"></div>
       <label class="ned-toggle"><input type="checkbox" data-setting="previewNegative"> AUTO 주입 플로팅 카드 보기</label>
     </section><section data-pane="settings" hidden>
-      <details class="ned-help"><summary>마법봉의 확장 버튼 · 간단 설명</summary><div><p>채팅 입력창의 마법봉 → <strong>NPC · 사건 생성</strong>을 누르면 이 화면이 열립니다.</p><p><strong>주입 항목</strong>에서 기능별 OFF·AUTO·ON을 정합니다. ON은 매번 주입, AUTO는 확률과 Jev 판정, OFF는 중지입니다.</p><p><strong>확률·Jev</strong>에서 추천 확률을 고르거나 숫자를 직접 바꿉니다. 실제 영어 주입문 미리보기를 켤 수 있습니다.</p><p><strong>설정</strong>에서 Jev 키·모델과 미리보기 한글 번역용 연결 프로필을 관리합니다. 번역문은 실제 RP에 주입되지 않습니다.</p></div></details>
+      <details class="ned-help"><summary>각 버튼·항목 설명</summary><div>
+        <p><strong>OFF / AUTO / ON</strong> · 끔 / Jev가 맥락 판정 / 매 IC 생성에 지시 주입. NPC·사건·빌런 AUTO는 확률 주사위가 먼저 성공해야 합니다.</p>
+        <p><strong>NPC 개입</strong> · 기존 NPC의 행동을 우선하고 필요할 때만 새 NPC를 등장시킵니다.</p>
+        <p><strong>사건 생성</strong> · 현재 장면에 원인과 결과가 있는 사건을 만듭니다.</p>
+        <p><strong>빌런</strong> · 대립 인물을 시작하거나 진행합니다. 한 번 시작한 성향과 상태는 이 채팅에 유지됩니다.</p>
+        <p><strong>NPC 자율행동</strong> · NPC가 자기 목적에 따라 선택하고 행동하게 합니다.</p>
+        <p><strong>감정 과잉 억제</strong> · 근거 없는 극단적 감정 반응을 줄입니다.</p>
+        <p><strong>싸움 유지</strong> · 이미 시작된 갈등이 이유 없이 사라지지 않도록 합니다. ON이면 빌런 진행은 잠시 멈춥니다.</p>
+        <p><strong>부정 세계</strong> · 설정 없는 새 인물의 무관심·자기이익을 기본으로 적용합니다. 기존 인물 성격은 보존합니다.</p>
+        <p><strong>부정 압력</strong> · 상황에 맞는 불리한 결과가 쉽게 보상·해결되지 않도록 합니다.</p>
+        <p><strong>원작 세계관 반영</strong> · 원작의 인물 해석, 장소, 용어, 규칙과 사건 소재를 현재 장면에 맞게 사용하도록 지시합니다.</p>
+        <p><strong>NPC·사건·빌런 기회 %</strong> · AUTO에서 각각의 주사위 확률을 직접 입력합니다. Jev가 다시 허용하거나 취소합니다.</p>
+        <p><strong>빌런 이벤트 종료</strong> · 이 채팅의 진행 중 빌런 상태를 초기화합니다.</p>
+        <p><strong>주입 플로팅 카드 보기</strong> · 실제 영어 지시를 화면에 표시합니다. 한글 번역 버튼은 보기용으로만 번역합니다.</p>
+        <p><strong>키 저장 / 키 삭제</strong> · 이 브라우저에 Jev 키를 저장하거나 지웁니다. <strong>모델</strong>은 Jev 모델 이름입니다.</p>
+        <p><strong>번역 연결 프로필 / 새로고침</strong> · 미리보기 번역에 사용할 프로필을 고르거나 목록을 다시 읽습니다. <strong>최근 채팅 메시지 수</strong>는 Jev가 볼 대화 길이입니다.</p>
+      </div></details>
       <label>Jev API key <input id="ned-key-input" type="password" autocomplete="off" placeholder="새 키 입력"></label>
       <div class="ned-key-actions"><button type="button" id="ned-save-key">키 저장</button><button type="button" id="ned-delete-key">키 삭제</button><span id="ned-key-state"></span></div>
       <label>Jev model <input data-setting="model" type="text" placeholder="jev-latest"></label>
@@ -106,16 +121,18 @@ function mount() {
     </section></main><footer id="ned-status">대기</footer>
   </div>`;
   document.body.append(panel);
-  const open = () => { refreshProfiles(); render(); panel.hidden = false; };
+  const syncViewport = () => {
+    const viewport = window.visualViewport;
+    panel.style.setProperty('--ned-viewport-top', `${viewport?.offsetTop || 0}px`);
+    panel.style.setProperty('--ned-viewport-height', `${viewport?.height || window.innerHeight}px`);
+  };
+  window.visualViewport?.addEventListener('resize', syncViewport);
+  window.visualViewport?.addEventListener('scroll', syncViewport);
+  window.addEventListener('resize', syncViewport);
+  const open = () => { syncViewport(); refreshProfiles(); render(); panel.hidden = false; };
   button.addEventListener('click', open);
   button.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   panel.addEventListener('click', e => {
-    const preset = e.target.closest('[data-preset]');
-    if (preset) {
-      const values = chancePresets[preset.dataset.preset];
-      if (values) { const c = context(); for (const [key, value] of Object.entries(values)) saveSetting(c, key, value); render(); status(`${preset.textContent.trim()} 확률 적용`); }
-      return;
-    }
     if (e.target.closest('[data-close="panel"]')) panel.hidden = true;
     const tab = e.target.closest('[data-tab]');
     if (tab) { panel.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('selected', b === tab)); panel.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== tab.dataset.tab); }

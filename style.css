@@ -10,7 +10,7 @@
 #npc-event-director nav { display: flex; gap: 6px; padding: 10px 14px 0; }
 #npc-event-director nav button { flex: 1; min-height: 40px; border-radius: 9px 9px 0 0; }
 #npc-event-director nav button.selected { border-bottom: 2px solid var(--SmartThemeQuoteColor, #8bbef4); font-weight: 700; }
-#npc-event-director main, #ned-preview main { overflow-y: auto; overscroll-behavior: contain; padding: 12px 18px 18px; }
+#npc-event-director main, #ned-preview main { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px 18px 18px; }
 #npc-event-director label { display: flex; flex-direction: column; gap: 5px; margin: 8px 0; }
 #npc-event-director input:not([type=checkbox]), #npc-event-director select { width: 100%; box-sizing: border-box; min-height: 38px; }
 #npc-event-director .ned-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
@@ -24,15 +24,18 @@
 #ned-preview details { margin-top: 18px; }
 #ned-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .83rem; }
 @media (max-width: 520px) { #npc-event-director, #ned-preview { padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)); } #npc-event-director .ned-dialog, #ned-preview .ned-dialog { max-height: calc(100dvh - 16px); } #npc-event-director .ned-grid { grid-template-columns: 1fr; gap: 0; } #npc-event-director main, #ned-preview main { padding: 10px 14px 16px; } }
+@media (max-width: 520px) {
+  #npc-event-director { inset: var(--ned-viewport-top, 0px) 0 auto 0; height: var(--ned-viewport-height, 100dvh); display: flex; align-items: flex-start; justify-content: center; overflow: hidden; }
+  #npc-event-director .ned-dialog { flex: 0 1 100%; max-height: 100%; min-height: 0; margin: 0; }
+  #npc-event-director header, #npc-event-director nav, #npc-event-director footer { flex: none; }
+  #npc-event-director main { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+}
 #npc-event-director .ned-key-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 #npc-event-director .ned-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 #npc-event-director .ned-mode { display: flex; flex-direction: row; align-items: center; gap: 9px; margin: 0; padding: 9px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
 #npc-event-director .ned-mode { justify-content: space-between; min-width: 0; }
 #npc-event-director .ned-mode select { width: 96px; min-width: 96px; min-height: 36px; }
 #npc-event-director .ned-auto-box { padding: 11px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; line-height: 1.5; }
-#npc-event-director .ned-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 12px 0; }
-#npc-event-director .ned-presets button { min-width: 0; min-height: 55px; padding: 7px; border-radius: 9px; line-height: 1.25; }
-#npc-event-director .ned-presets small { font-size: .76rem; opacity: .8; }
 #npc-event-director .ned-help { margin: 2px 0 15px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
 #npc-event-director .ned-help summary { cursor: pointer; padding: 11px 13px; font-weight: 700; }
 #npc-event-director .ned-help div { padding: 0 13px 8px; }
@@ -48,4 +51,3 @@
 #ned-preview #ned-preview-ko[hidden] { display: none; }
 @media (max-width: 520px) { #ned-preview { inset: auto 8px calc(74px + env(safe-area-inset-bottom)) 8px; width: auto; padding: 0; } #ned-preview .ned-dialog { max-height: 52dvh; } }
 @media (max-width: 520px) { #npc-event-director .ned-modes { grid-template-columns: 1fr; } }
-@media (max-width: 520px) { #npc-event-director .ned-presets { grid-template-columns: 1fr; } }
