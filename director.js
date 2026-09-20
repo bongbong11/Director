@@ -4,7 +4,12 @@ export const defaults = Object.freeze({
   npcMode: 'AUTO', eventMode: 'AUTO', fightMode: 'OFF', autonomyMode: 'OFF',
   emotionMode: 'OFF', villainMode: 'AUTO', worldMode: 'OFF', canonMode: 'AUTO', pressureMode: 'AUTO',
   previewGeneral: false, previewNegative: false, translationProfile: '',
-  npcChance: 20, eventChance: 15, villainChance: 10, recentCount: 10
+  npcChance: 15, eventChance: 10, villainChance: 5, recentCount: 10
+});
+export const chancePresets = Object.freeze({
+  rare: Object.freeze({ npcChance: 5, eventChance: 5, villainChance: 2 }),
+  moderate: Object.freeze({ npcChance: 15, eventChance: 10, villainChance: 5 }),
+  frequent: Object.freeze({ npcChance: 30, eventChance: 20, villainChance: 10 }),
 });
 export const initialState = () => ({ villain: 'idle', profile: null, pending: false, last: '대기' });
 const yes = (a, k, threshold = .68) => score(a, k) >= threshold;

@@ -27,6 +27,16 @@
 #npc-event-director .ned-key-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 #npc-event-director .ned-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 #npc-event-director .ned-mode { display: flex; flex-direction: row; align-items: center; gap: 9px; margin: 0; padding: 9px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
+#npc-event-director .ned-mode { justify-content: space-between; min-width: 0; }
+#npc-event-director .ned-mode select { width: 96px; min-width: 96px; min-height: 36px; }
+#npc-event-director .ned-auto-box { padding: 11px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; line-height: 1.5; }
+#npc-event-director .ned-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 12px 0; }
+#npc-event-director .ned-presets button { min-width: 0; min-height: 55px; padding: 7px; border-radius: 9px; line-height: 1.25; }
+#npc-event-director .ned-presets small { font-size: .76rem; opacity: .8; }
+#npc-event-director .ned-help { margin: 2px 0 15px; border: 1px solid var(--SmartThemeBorderColor, #777); border-radius: 9px; }
+#npc-event-director .ned-help summary { cursor: pointer; padding: 11px 13px; font-weight: 700; }
+#npc-event-director .ned-help div { padding: 0 13px 8px; }
+#npc-event-director .ned-help p { margin: 8px 0; }
 #npc-event-director .ned-mode input { width: 18px; height: 18px; flex: none; }
 #npc-event-director .ned-mode span { min-width: 0; }
 #ned-preview { inset: auto 16px 84px auto; width: min(440px, calc(100vw - 32px)); height: auto; display: block; padding: 0; pointer-events: none; }
@@ -38,3 +48,4 @@
 #ned-preview #ned-preview-ko[hidden] { display: none; }
 @media (max-width: 520px) { #ned-preview { inset: auto 8px calc(74px + env(safe-area-inset-bottom)) 8px; width: auto; padding: 0; } #ned-preview .ned-dialog { max-height: 52dvh; } }
 @media (max-width: 520px) { #npc-event-director .ned-modes { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { #npc-event-director .ned-presets { grid-template-columns: 1fr; } }

@@ -1,4 +1,4 @@
-import { defaults, initialState, roll, recentChat, isOoc, retrievalContext, buildState, activeGenres, decide, alwaysOn } from './director.js';
+import { defaults, chancePresets, initialState, roll, recentChat, isOoc, retrievalContext, buildState, activeGenres, decide, alwaysOn } from './director.js';
 import { evaluateViaBridge, keyStatus, saveKey, deleteKey } from './bridge.js';
 import { assemble } from './prompts.js';
 import { supportedProfiles, translatePrompt } from './preview.js';
@@ -46,8 +46,13 @@ function refreshProfiles() {
 function render() {
   const s = store(), c = context(), st = stateFor(c);
   document.querySelectorAll('#npc-event-director [data-setting]').forEach(el => { if (el.type === 'checkbox') el.checked = !!s[el.dataset.setting]; else el.value = s[el.dataset.setting] ?? ''; });
-  document.querySelectorAll('#npc-event-director [data-fixed]').forEach(el => { el.checked = s[el.dataset.fixed] === 'ON'; });
-  document.querySelectorAll('#npc-event-director [data-auto]').forEach(el => { el.checked = s[el.dataset.auto] === 'AUTO'; });
+  document.querySelectorAll('#npc-event-director [data-mode]').forEach(el => { el.value = s[el.dataset.mode] || 'OFF'; });
+  const autoSummary = document.querySelector('#ned-auto-summary');
+  if (autoSummary) autoSummary.textContent = [
+    ['npcMode', 'NPC'], ['eventMode', '사건'], ['villainMode', '빌런'],
+    ['autonomyMode', 'NPC 자율행동'], ['emotionMode', '감정 과잉 억제'], ['fightMode', '싸움 유지'],
+    ['worldMode', '부정 세계'], ['pressureMode', '부정 압력'], ['canonMode', '원작 세계관 반영'],
+  ].filter(([key]) => s[key] === 'AUTO').map(([, name]) => name).join(' · ') || 'AUTO 항목 없음';
   const villain = document.querySelector('#ned-villain-state'); if (villain) villain.textContent = `빌런: ${st.villain} · ${st.last}`;
   const genres = document.querySelector('#ned-active-genres'); if (genres) genres.textContent = activeGenres(c.chatMetadata) || '(현재 채팅의 GENRE 변수 없음)';
   const keyState = document.querySelector('#ned-key-state'); if (keyState) keyState.textContent = keyConfigured ? 'Jev 키 저장됨 (이 브라우저)' : 'Jev 키 없음';
@@ -67,27 +72,29 @@ function mount() {
     ['autonomyMode','NPC 자율행동'], ['emotionMode','감정 과잉 억제'], ['fightMode','싸움 유지'],
     ['worldMode','부정 세계'], ['pressureMode','부정 압력'], ['canonMode','원작 세계관 반영'],
   ];
-  const fixedRows = modeLabels.map(([key, name]) => `<label class="ned-mode"><input type="checkbox" data-fixed="${key}"><span>${name}</span></label>`).join('');
-  const autoRows = modeLabels.map(([key, name]) => `<label class="ned-mode"><input type="checkbox" data-auto="${key}"><span>${name}</span></label>`).join('');
+  const modeRows = modeLabels.map(([key, name]) => `<label class="ned-mode"><span>${name}</span><select data-mode="${key}" aria-label="${name} 동작"><option value="OFF">OFF</option><option value="AUTO">AUTO</option><option value="ON">ON</option></select></label>`).join('');
   const panel = document.createElement('div'); panel.id = 'npc-event-director'; panel.hidden = true;
   panel.innerHTML = `<div class="ned-backdrop" data-close="panel"></div><div class="ned-dialog" role="dialog" aria-modal="true" aria-label="NPC · 사건 생성 설정">
     <header><strong>NPC · 사건 생성</strong><button type="button" data-close="panel" aria-label="닫기">×</button></header>
-    <nav><button type="button" data-tab="general" class="selected">일반·수동</button><button type="button" data-tab="negative">확률·Jev</button><button type="button" data-tab="settings">설정</button></nav>
+    <nav><button type="button" data-tab="general" class="selected">주입 항목</button><button type="button" data-tab="negative">확률·Jev</button><button type="button" data-tab="settings">설정</button></nav>
     <main>
     <section data-pane="general">
-      <p>켜면 Jev 없이 매 IC 생성마다 해당 지시를 주입합니다. 끄면 해당 기능이 OFF가 됩니다.</p>
-      <div class="ned-modes">${fixedRows}</div>
-      <label class="ned-toggle"><input type="checkbox" data-setting="previewGeneral"> 실제 주입 플로팅 카드 보기</label>
+      <p>각 항목을 한 곳에서 설정합니다. ON은 매 IC 생성에 주입, AUTO는 확률·Jev 판정에 따름, OFF는 중지입니다.</p>
+      <div class="ned-modes">${modeRows}</div>
+      <label class="ned-toggle"><input type="checkbox" data-setting="previewGeneral"> ON 주입 플로팅 카드 보기</label>
     </section><section data-pane="negative" hidden>
-      <p>켜면 AUTO가 됩니다. NPC·사건·빌런은 아래 기회 주사위가 성공할 때 Jev가 판정합니다. 다른 AUTO 항목은 그 판정에 맞춰 함께 적용됩니다.</p>
-      <div class="ned-modes">${autoRows}</div>
+      <p>주입 항목 탭에서 AUTO로 고른 기능에 적용합니다. NPC·사건·빌런은 아래 기회 주사위가 성공할 때 Jev가 판정합니다. 다른 AUTO 항목은 Jev 판정과 함께 적용됩니다.</p>
+      <div class="ned-auto-box"><strong>현재 AUTO 항목</strong><div id="ned-auto-summary"></div></div>
+      <div class="ned-presets" aria-label="확률 추천값"><button type="button" data-preset="rare">드묾<br><small>NPC 5 · 사건 5 · 빌런 2%</small></button><button type="button" data-preset="moderate">적당 · 추천<br><small>NPC 15 · 사건 10 · 빌런 5%</small></button><button type="button" data-preset="frequent">자주<br><small>NPC 30 · 사건 20 · 빌런 10%</small></button></div>
       <div class="ned-grid"><label>NPC 기회 % <input type="number" min="0" max="100" data-setting="npcChance"></label>
       <label>사건 기회 % <input type="number" min="0" max="100" data-setting="eventChance"></label>
       <label>빌런 기회 % <input type="number" min="0" max="100" data-setting="villainChance"></label></div>
+      <p class="ned-note">매 IC 생성마다 각각 굴리는 기회 확률입니다. 셋 다 AUTO라면 적당 추천값에서 하나 이상 주사위가 성공할 확률은 약 27%입니다. Jev가 장면에 맞지 않으면 취소하므로 실제 개입은 더 적습니다. 빌런은 한번 시작하면 상태가 이어지므로 낮게 두는 편이 자연스럽습니다.</p>
       <p>싸움 유지 ON 중에는 빌런 진행·추첨을 잠시 멈춥니다. 부정 세계의 1% 동정 예외는 새 비시트 NPC에만 적용됩니다.</p>
       <button type="button" id="ned-end-villain">빌런 이벤트 종료</button><div id="ned-villain-state"></div>
-      <label class="ned-toggle"><input type="checkbox" data-setting="previewNegative"> 실제 주입 플로팅 카드 보기</label>
+      <label class="ned-toggle"><input type="checkbox" data-setting="previewNegative"> AUTO 주입 플로팅 카드 보기</label>
     </section><section data-pane="settings" hidden>
+      <details class="ned-help"><summary>마법봉의 확장 버튼 · 간단 설명</summary><div><p>채팅 입력창의 마법봉 → <strong>NPC · 사건 생성</strong>을 누르면 이 화면이 열립니다.</p><p><strong>주입 항목</strong>에서 기능별 OFF·AUTO·ON을 정합니다. ON은 매번 주입, AUTO는 확률과 Jev 판정, OFF는 중지입니다.</p><p><strong>확률·Jev</strong>에서 추천 확률을 고르거나 숫자를 직접 바꿉니다. 실제 영어 주입문 미리보기를 켤 수 있습니다.</p><p><strong>설정</strong>에서 Jev 키·모델과 미리보기 한글 번역용 연결 프로필을 관리합니다. 번역문은 실제 RP에 주입되지 않습니다.</p></div></details>
       <label>Jev API key <input id="ned-key-input" type="password" autocomplete="off" placeholder="새 키 입력"></label>
       <div class="ned-key-actions"><button type="button" id="ned-save-key">키 저장</button><button type="button" id="ned-delete-key">키 삭제</button><span id="ned-key-state"></span></div>
       <label>Jev model <input data-setting="model" type="text" placeholder="jev-latest"></label>
@@ -103,6 +110,12 @@ function mount() {
   button.addEventListener('click', open);
   button.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   panel.addEventListener('click', e => {
+    const preset = e.target.closest('[data-preset]');
+    if (preset) {
+      const values = chancePresets[preset.dataset.preset];
+      if (values) { const c = context(); for (const [key, value] of Object.entries(values)) saveSetting(c, key, value); render(); status(`${preset.textContent.trim()} 확률 적용`); }
+      return;
+    }
     if (e.target.closest('[data-close="panel"]')) panel.hidden = true;
     const tab = e.target.closest('[data-tab]');
     if (tab) { panel.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('selected', b === tab)); panel.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== tab.dataset.tab); }
@@ -116,8 +129,8 @@ function mount() {
     if (e.target.id === 'ned-delete-key') deleteKey().then(() => { keyConfigured = false; render(); status('Jev 키 삭제됨'); }).catch(error => status(error.message));
   });
   panel.addEventListener('change', e => {
-    const modeKey = e.target.dataset.fixed || e.target.dataset.auto;
-    if (modeKey) { saveSetting(context(), modeKey, e.target.checked ? e.target.dataset.fixed ? 'ON' : 'AUTO' : 'OFF'); render(); return; }
+    const modeKey = e.target.dataset.mode;
+    if (modeKey) { saveSetting(context(), modeKey, e.target.value); render(); return; }
     const key = e.target.dataset.setting; if (!key) return;
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.type === 'number' ? Math.max(0, Math.min(key === 'recentCount' ? 20 : 100, Number(e.target.value))) : e.target.value;
     saveSetting(context(), key, value);
